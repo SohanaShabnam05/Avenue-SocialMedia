@@ -6,10 +6,10 @@ import PostWidget from "./PostWidget";
 const PostsWidget = ({ userId, isProfile = false }) => {
   const dispatch = useDispatch();
   const posts = useSelector((state) => state.posts);
+  console.log("posts",posts);
   const token = useSelector((state) => state.token);
-
   const getPosts = async () => {
-    const response = await fetch("http://localhost:3001/posts", {
+    const response = await fetch(process.env.REACT_APP_BASE_URL+"/posts", {
       method: "GET",
       headers: { Authorization: `Bearer ${token}` },
     });
@@ -19,13 +19,14 @@ const PostsWidget = ({ userId, isProfile = false }) => {
 
   const getUserPosts = async () => {
     const response = await fetch(
-      `http://localhost:3001/posts/${userId}/posts`,
+      process.env.REACT_APP_BASE_URL+`/posts/${userId}/posts`,
       {
         method: "GET",
         headers: { Authorization: `Bearer ${token}` },
       }
     );
     const data = await response.json();
+    
     dispatch(setPosts({ posts: data }));
   };
 
@@ -39,7 +40,7 @@ const PostsWidget = ({ userId, isProfile = false }) => {
 
   return (
     <>
-      {posts.map(
+      {posts?.map(
         ({
           _id,
           userId,
@@ -65,6 +66,7 @@ const PostsWidget = ({ userId, isProfile = false }) => {
             comments={comments}
           />
         )
+
       )}
     </>
   );
